@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Weather Alert</string>
+    <string name="weatherDesc">Weather Description</string>
+    <string name="date" />
+    <string name="Date">Monday, 5 May</string>
+    <string name="humidity">"humidity "</string>
+    <string name="windSpeed">"Wind Speed "</string>
+    <string name="temperature">20</string>
+    <string name="nextHourly">next hourly</string>
+    <string name="next15Dayes">next 15 Dayes</string>
+    <string name="location">location</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
