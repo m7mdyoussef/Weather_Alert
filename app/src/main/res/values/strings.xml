@@ -11,4 +11,18 @@
     <string name="location">location</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pressure">pressure</string>
+    <string name="Clouds">Clouds</string>
+    <string name="feels_like">"feels like:  "</string>
+    <string name="windspeed">"wind speed : "</string>
+    <string name="Humidity">"Humidity : "</string>
+    <string name="Pressure">"pressure : "</string>
+    <string name="clouds">"Clouds : "</string>
+    <string name="daily_date">Daily Date</string>
+    <string name="temp">Temp.</string>
+    <string name="Temp">"Temp. : "</string>
+    <string name="description">"Description : "</string>
+    <string name="AddFav">Add your favorite places</string>
+    <string name="place">place</string>
+    <string name="search">Search</string>
 </resources>

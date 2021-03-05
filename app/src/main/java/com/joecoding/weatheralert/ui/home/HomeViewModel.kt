@@ -3,18 +3,24 @@ package com.joecoding.weatheralert.ui.home
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.joecoding.weatheralert.model.repository.Repository
 import com.joecoding.weatheralert.model.currentWeatherModel.db.remoteSourceDB.response.CurrentWeatherModel
 
 class HomeViewModel(application: Application) : AndroidViewModel(application){
 
-   // val CurrentWeatherLiveData = MutableLiveData<CurrentWeatherModel>()
+   lateinit var currentWeatherLiveData :LiveData<CurrentWeatherModel>
+    var repository: Repository = Repository(application)
 
-    val repository = Repository(application)
 
     fun getWeather(): LiveData<CurrentWeatherModel> {
-        return repository.fetchData()
+
+        currentWeatherLiveData= repository.fetchData()
+
+        return currentWeatherLiveData
     }
+
+
 
 
 }

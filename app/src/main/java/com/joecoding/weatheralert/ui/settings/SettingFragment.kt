@@ -1,51 +1,95 @@
 package com.joecoding.weatheralert.ui.settings
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.joecoding.weatheralert.R
+import androidx.lifecycle.ViewModelProvider
+import com.joecoding.weatheralert.databinding.FragmentSettingBinding
+import com.joecoding.weatheralert.providers.SharedPreferencesProvider
 
 
 class SettingFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    lateinit var viewModel: SettingsViewModel
+    private var _binding: FragmentSettingBinding? = null
+    private val binding get() = _binding!!
 
-    }
+    lateinit var sharedPref: SharedPreferencesProvider
+
+
+    var imperialIsCheched:Boolean = false
+    var metricIsCheched:Boolean = false
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_setting, container, false)
+        _binding = FragmentSettingBinding.inflate(inflater, container, false)
+
+        viewModel = ViewModelProvider.AndroidViewModelFactory
+            .getInstance(requireActivity().application)
+            .create(SettingsViewModel::class.java)
+
+        return binding.root
+
+
     }
 
-    companion object {
-        // TODO: Rename parameter arguments, choose names that match
-        // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private const val ARG_PARAM1 = "param1"
-        private const val ARG_PARAM2 = "param2"
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val c = activity?.getSharedPreferences("imperial",Context.MODE_PRIVATE)
 
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProfileFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        fun newInstance(param1: String?, param2: String?): SettingFragment {
-            val fragment =
-                SettingFragment()
-            val args = Bundle()
-            args.putString(ARG_PARAM1, param1)
-            args.putString(ARG_PARAM2, param2)
-            fragment.arguments = args
-            return fragment
-        }
+        sharedPref = SharedPreferencesProvider(requireContext())
+
+       // sharedPref.isUnitsConvertedToImperial
+
+        binding.ImperialChecked.setOnClickListener(View.OnClickListener {
+                if(imperialIsCheched){
+                    binding.ImperialChecked.speed=-1f
+                    binding.ImperialChecked.playAnimation()
+                    imperialIsCheched=false
+                    sharedPref.convertUnitsToImperial(false)
+
+                }else{
+                    binding.ImperialChecked.speed=1f
+                    binding.ImperialChecked.playAnimation()
+                    binding.MetricChecked.speed=-1f
+                    binding.MetricChecked.playAnimation()
+                    imperialIsCheched=true
+                    metricIsCheched=false
+                    sharedPref.convertUnitsToImperial(true)
+                    sharedPref.convertUnitsToMetric(false)
+                }
+
+
+
+        })
+
+        binding.MetricChecked.setOnClickListener(View.OnClickListener {
+            if(metricIsCheched){
+                binding.MetricChecked.speed=-1f
+                binding.MetricChecked.playAnimation()
+                metricIsCheched=false
+                sharedPref.convertUnitsToMetric(false)
+            }else{
+                binding.MetricChecked.speed=1f
+                binding.MetricChecked.playAnimation()
+                binding.ImperialChecked.speed=-1f
+                binding.ImperialChecked.playAnimation()
+                metricIsCheched=true
+                imperialIsCheched=false
+                sharedPref.convertUnitsToImperial(false)
+                sharedPref.convertUnitsToMetric(true)
+
+            }
+        })
+
+
     }
+
 }

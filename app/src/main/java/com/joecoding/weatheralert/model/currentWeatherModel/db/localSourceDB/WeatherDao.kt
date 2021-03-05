@@ -12,10 +12,11 @@ interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(currentWeatherModel: CurrentWeatherModel?)
 
-    @Query("SELECT * From CurrentWeatherModel")
-    fun getAll(): LiveData<CurrentWeatherModel>
+    @Query("SELECT * From CurrentWeatherModel WHERE lat=:lat AND lon=:lon")
+    fun getAll(lat: String?, lon: String?): LiveData<CurrentWeatherModel>
 
-
+    @Query("Delete from CurrentWeatherModel WHERE lat=:lat AND lon=:lng  ")
+    suspend fun deleteAllWeather(lat:String , lng:String)
 //
 //    @Query("SELECT * From CurrentWeatherModel")
 //    fun getAll(): LiveData<CurrentWeatherModel>?

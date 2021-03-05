@@ -37,7 +37,7 @@
                 android:orientation="vertical">
 
                 <com.cooltechworks.views.shimmer.ShimmerRecyclerView
-                    android:id="@+id/rvListWeather"
+                    android:id="@+id/rvDailyWeather"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:shimmer_demo_angle="20"

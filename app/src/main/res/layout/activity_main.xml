@@ -16,12 +16,6 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 
-
-
-
-
-
-
     <com.etebarian.meowbottomnavigation.MeowBottomNavigation
         android:id="@+id/bnv_Main"
         android:layout_width="match_parent"

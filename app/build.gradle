@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         applicationId "com.joecoding.weatheralert"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -136,6 +136,8 @@ dependencies {
     //map_box autocomplete
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v9:0.12.0'
 
+    //expandable FAB
+    implementation 'com.github.imtuann:FloatingActionButtonExpandable:1.1.2'
 
 
 }

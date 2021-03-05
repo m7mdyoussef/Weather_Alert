@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName
 import com.joecoding.weatheralert.model.currentWeatherModel.db.converter.AlertItemTypeConverter
 import com.joecoding.weatheralert.model.currentWeatherModel.db.converter.DailyItemTypeConverter
 import com.joecoding.weatheralert.model.currentWeatherModel.db.converter.HourlyItemTypeConverter
+import java.io.Serializable
 
 @Entity(primaryKeys = ["lon","lat"])
 @JvmSuppressWildcards
@@ -40,4 +41,4 @@ data class CurrentWeatherModel(
 
 	@field:SerializedName("lat")
 	val lat: Double
-)
+) : Serializable

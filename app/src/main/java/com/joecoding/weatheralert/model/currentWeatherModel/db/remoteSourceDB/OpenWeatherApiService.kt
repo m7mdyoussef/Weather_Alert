@@ -23,10 +23,10 @@ const val API_KEY="d777ae60141a13cd6e1dd200ac6c5fdb"
 interface OpenWeatherApiService {
 
     @GET("onecall")
-    suspend fun getCurrentWeather(@Query("lat") lat:String,
-                                  @Query("lon") lon:String,
+    suspend fun getCurrentWeather(@Query("lat") lat: String?,
+                                  @Query("lon") lon: String?,
                                   @Query("exclude") exclude:String,
-                                  @Query("units") units:String ,
+                                  @Query("units") units:String,
                                   @Query("lang") lang: String,
                                   @Query("appid") appid: String= API_KEY
     ): Response<CurrentWeatherModel>
