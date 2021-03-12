@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.welcom.SplashScreen">
+
+    <com.scwang.wave.MultiWaveHeader
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:id="@+id/waveHeader"/>
+    <com.scwang.wave.MultiWaveHeader
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:id="@+id/waveFooter"
+        android:scaleY="-1"
+        android:layout_alignParentBottom="true"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/splashlottie"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/waveFooter"
+        android:layout_below="@+id/waveHeader"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="30dp"
+        app:layout_constraintBottom_toTopOf="@id/waveFooter"
+        app:layout_constraintTop_toBottomOf="@id/waveHeader"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/snow" />
+
+</RelativeLayout>

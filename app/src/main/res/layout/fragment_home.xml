@@ -7,6 +7,10 @@
     tools:context=".MainActivity">
 
 
+    <jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout
+        android:id="@+id/refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -21,7 +25,7 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="350dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
@@ -108,9 +112,8 @@
                             android:gravity="center"
                             android:text="@string/Date"
                             android:textColor="@android:color/white"
-                            android:textSize="18sp" />
-
-
+                            android:textSize="18sp"
+                            android:layout_marginBottom="8dp"/>
 
 
 
@@ -121,8 +124,7 @@
                         android:orientation="horizontal">
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
+                            android:layout_height="40dp"
                             android:gravity="center"
                             android:text="@string/windspeed"
                             android:textColor="@android:color/white"
@@ -131,11 +133,21 @@
                         <TextView
                             android:id="@+id/windSpeedTxt"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
+                            android:layout_height="40dp"
                             android:gravity="center"
                             android:textColor="@android:color/white"
                             android:textSize="14sp" />
+
+                        <com.airbnb.lottie.LottieAnimationView
+                            android:id="@+id/iconwind"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="20dp"
+                            app:lottie_autoPlay="true"
+                            app:lottie_loop="true"
+                            app:lottie_rawRes="@raw/turbine"
+                            />
 
                     </LinearLayout>
 
@@ -147,8 +159,7 @@
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
+                            android:layout_height="40dp"
                             android:gravity="center"
                             android:text="@string/Humidity"
                             android:textColor="@android:color/white"
@@ -158,11 +169,22 @@
                             <TextView
                                 android:id="@+id/humidityTxt"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
+                                android:layout_height="40dp"
                                 android:gravity="center"
                                 android:textColor="@android:color/white"
                                 android:textSize="14sp" />
+
+                            <com.airbnb.lottie.LottieAnimationView
+                                android:id="@+id/iconhumid"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="20dp"
+                                app:lottie_autoPlay="true"
+                                app:lottie_loop="true"
+                                app:lottie_rawRes="@raw/droplet"
+
+                                />
 
                         </LinearLayout>
 
@@ -173,8 +195,7 @@
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
+                            android:layout_height="40dp"
                             android:gravity="center"
                             android:text="@string/Pressure"
                             android:textColor="@android:color/white"
@@ -183,11 +204,22 @@
                             <TextView
                                 android:id="@+id/pressure"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
+                                android:layout_height="40dp"
                                 android:gravity="center"
                                 android:textColor="@android:color/white"
                                 android:textSize="14sp" />
+
+                            <com.airbnb.lottie.LottieAnimationView
+                                android:id="@+id/iconpressure"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="20dp"
+                                app:lottie_autoPlay="true"
+                                app:lottie_loop="true"
+                                app:lottie_rawRes="@raw/gauge"
+
+                                />
 
                         </LinearLayout>
 
@@ -199,8 +231,7 @@
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
+                            android:layout_height="40dp"
                             android:gravity="center"
                             android:text="@string/clouds"
                             android:textColor="@android:color/white"
@@ -209,11 +240,22 @@
                             <TextView
                                 android:id="@+id/clouds"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
+                                android:layout_height="40dp"
                                 android:gravity="center"
                                 android:textColor="@android:color/white"
                                 android:textSize="14sp" />
+
+                            <com.airbnb.lottie.LottieAnimationView
+                                android:id="@+id/iconcloud"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="20dp"
+                                app:lottie_autoPlay="true"
+                                app:lottie_loop="true"
+                                app:lottie_rawRes="@raw/cloud"
+
+                                />
 
 
                         </LinearLayout>
@@ -224,13 +266,14 @@
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/iconTemp"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="155dp"
+                    android:layout_height="155dp"
                     android:layout_gravity="end|bottom"
                     android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="15dp"
                     app:lottie_autoPlay="true"
                     app:lottie_loop="true"
-                    tools:ignore="RtlCompat" />
+                    />
 
             </androidx.cardview.widget.CardView>
 
@@ -238,7 +281,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:text="@string/nextHourly"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
@@ -248,13 +291,14 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvListWeatherHome"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+               />
 
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-
+    </jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout>
 
 </RelativeLayout>

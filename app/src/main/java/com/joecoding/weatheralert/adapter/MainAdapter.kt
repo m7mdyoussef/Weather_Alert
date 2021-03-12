@@ -11,6 +11,8 @@ import com.airbnb.lottie.LottieAnimationView
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.joecoding.weatheralert.R
 import com.joecoding.weatheralert.model.currentWeatherModel.db.remoteSourceDB.response.HourlyItem
+import com.joecoding.weatheralert.network.ApiUnits
+import com.joecoding.weatheralert.providers.SharedPreferencesProvider
 import kotlinx.android.synthetic.main.list_item_main.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,36 +39,71 @@ class MainAdapter(private val items: List<HourlyItem?>?) : RecyclerView.Adapter<
         val format = simpleDateFormat.format(data?.dt?.times(1000L))
 
         holder.tvTime.text =format
-        holder.tvTemp.text = String.format(Locale.getDefault(), "%.0f°C", data?.temp)
+        holder.tvTemp.text = String.format(Locale.getDefault(), "%.0f°${ApiUnits.tempUnit}", data?.temp)
         holder.tvHumidity.text = data?.humidity.toString()
         holder.tvPressure.text = data?.pressure.toString()
         holder.tvWindSpeed.text = data?.windSpeed.toString()
 
-        when (data?.weather?.get(0)?.description) {
-            "broken clouds" -> {
+
+
+        when (data?.weather?.get(0)?.icon) {
+            "04d" -> {
                 holder.iconTemp.setAnimation(R.raw.broken_clouds)
             }
-            "light rain" -> {
+            "04n" -> {
+                holder.iconTemp.setAnimation(R.raw.broken_clouds)
+            }
+            "10d" -> {
                 holder.iconTemp.setAnimation(R.raw.light_rain)
             }
-            "overcast clouds" -> {
-                holder.iconTemp.setAnimation(R.raw.overcast_clouds)
+            "10n" -> {
+                holder.iconTemp.setAnimation(R.raw.light_rain)
             }
-            "moderate rain" -> {
-                holder.iconTemp.setAnimation(R.raw.moderate_rain)
-            }
-            "few clouds" -> {
-                holder.iconTemp.setAnimation(R.raw.few_clouds)
-            }
-            "heavy intensity rain" -> {
+            "09d" -> {
                 holder.iconTemp.setAnimation(R.raw.heavy_intentsity)
             }
-            "clear sky" -> {
+            "09n" -> {
+                holder.iconTemp.setAnimation(R.raw.heavy_intentsity)
+            }
+            "03d" -> {
+                holder.iconTemp.setAnimation(R.raw.overcast_clouds)
+            }
+            "03n" -> {
+                holder.iconTemp.setAnimation(R.raw.overcast_clouds)
+            }
+
+            "02d" -> {
+                holder.iconTemp.setAnimation(R.raw.few_clouds)
+            }
+            "02n" -> {
+                holder.iconTemp.setAnimation(R.raw.few_clouds)
+            }
+
+            "01d" -> {
                 holder.iconTemp.setAnimation(R.raw.clear_sky)
             }
-            "scattered clouds" -> {
-                holder.iconTemp.setAnimation(R.raw.scattered_clouds)
+            "01n" -> {
+                holder.iconTemp.setAnimation(R.raw.clear_sky)
             }
+            "11d" -> {
+                holder.iconTemp.setAnimation(R.raw.thunderstorm)
+            }
+            "11n" -> {
+                holder.iconTemp.setAnimation(R.raw.thunderstorm)
+            }
+            "13d" -> {
+                holder.iconTemp.setAnimation(R.raw.snow)
+            }
+            "13n" -> {
+                holder.iconTemp.setAnimation(R.raw.snow)
+            }
+            "50d" -> {
+                holder.iconTemp.setAnimation(R.raw.mist)
+            }
+            "50n" -> {
+                holder.iconTemp.setAnimation(R.raw.mist)
+            }
+
             else -> {
                 holder.iconTemp.setAnimation(R.raw.unknown)
             }

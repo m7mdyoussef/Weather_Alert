@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 
 class SharedPreferencesProvider(context: Context) {
 
-
     companion object {
         private lateinit var pref: SharedPreferences
         private lateinit var editor: SharedPreferences.Editor
@@ -13,6 +12,8 @@ class SharedPreferencesProvider(context: Context) {
 
         // Shared preferences for Intro_Pager
         private const val IS_FIRST_TIME_LAUNCH = "IS_FIRST_TIME_LAUNCH"
+        private const val IS_FIRST_TIME_LAUNCH_ONE = "IS_FIRST_TIME_LAUNCH_ONE"
+
 
         // Shared preferences for location
         private const val IS_LOCATION_ENABLED = "IS_LOCATION_ENABLED"
@@ -24,8 +25,13 @@ class SharedPreferencesProvider(context: Context) {
         private const val LAT_SHARED_PREF = "LAT_SHARED_PREF"
         private const val LONG_SHARED_PREF = "LONG_SHARED_PREF"
 
+        // Shared preferences for LAT_LONG_Fav
+        private const val LAT_SHARED_PREF_FAV = "LAT_SHARED_PREF_FAV"
+        private const val LONG_SHARED_PREF_FAV = "LONG_SHARED_PREF_FAV"
+
+
         // shared preference for units and language
-        private const val IMPERIAL_UNITS_SHARED_PREF = "IMPERIAL_UNITS_SHARED_PREF"
+        private const val UNITS_SHARED_PREF = "UNITS_SHARED_PREF"
         private const val METRIC_UNITS_SHARED_PREF = "METRIC_UNITS_SHARED_PREF"
 
         private const val LANGUAGE_SHARED_PREF = "LANGUAGE_SHARED_PREF"
@@ -49,24 +55,45 @@ class SharedPreferencesProvider(context: Context) {
 
     /***********************************************************************************************
      */
-
-    fun convertUnitsToImperial(converted: Boolean){
-        editor.putBoolean(IMPERIAL_UNITS_SHARED_PREF, converted)
+    fun setFirstTimeLaunch1(isFirstTime: Boolean){
+        editor.putBoolean(IS_FIRST_TIME_LAUNCH_ONE, isFirstTime)
         editor.commit()
     }
 
-    val isUnitsConvertedToImperial: Boolean
-        get()= pref.getBoolean(IMPERIAL_UNITS_SHARED_PREF, false)
+    val isFirstTimeLaunch1: Boolean
+        get()= pref.getBoolean(IS_FIRST_TIME_LAUNCH_ONE, true)
 
     /***********************************************************************************************
      */
 
-    fun convertUnitsToMetric(converted: Boolean){
+    fun setUnit(unit:String){
+        editor.putString(UNITS_SHARED_PREF,unit)
+        editor.apply()
+    }
+
+    val getUnit : String?
+        get()= pref.getString(UNITS_SHARED_PREF,"metric")
+
+    /***********************************************************************************************
+     */
+    fun setLanguage(Language:String){
+        editor.putString(LANGUAGE_SHARED_PREF,Language)
+        editor.apply()
+    }
+
+    val getLanguage : String?
+        get()= pref.getString(LANGUAGE_SHARED_PREF,"en")
+
+
+
+    /***********************************************************************************************
+     */
+    fun alarmSwitchedOn(converted: Boolean){
         editor.putBoolean(METRIC_UNITS_SHARED_PREF, converted)
         editor.commit()
     }
 
-    val isUnitsConvertedToMetric: Boolean
+    val isAlarmSwitchedOn: Boolean
         get()= pref.getBoolean(METRIC_UNITS_SHARED_PREF, false)
 
     /***********************************************************************************************
@@ -90,8 +117,25 @@ class SharedPreferencesProvider(context: Context) {
     val latLong: Array<String?>
         get() {
             val location = arrayOfNulls<String>(2)
-            val lat = pref.getString(LAT_SHARED_PREF, "0.0")
-            val lng = pref.getString(LONG_SHARED_PREF, "0.0")
+            val lat = pref.getString(LAT_SHARED_PREF, null)
+            val lng = pref.getString(LONG_SHARED_PREF, null)
+            location[0] = lat
+            location[1] = lng
+            return location
+        }
+    /***********************************************************************************************
+     */
+    fun setLatLongFav(latitude: String?, longitude: String?) {
+        editor.putString(LAT_SHARED_PREF_FAV, latitude)
+        editor.putString(LONG_SHARED_PREF_FAV, longitude)
+        editor.commit()
+    }
+
+    val latLongFav: Array<String?>
+        get() {
+            val location = arrayOfNulls<String>(2)
+            val lat = pref.getString(LAT_SHARED_PREF_FAV, null)
+            val lng = pref.getString(LONG_SHARED_PREF_FAV, null)
             location[0] = lat
             location[1] = lng
             return location

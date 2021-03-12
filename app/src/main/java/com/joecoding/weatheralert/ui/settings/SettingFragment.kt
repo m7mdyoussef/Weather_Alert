@@ -1,14 +1,22 @@
 package com.joecoding.weatheralert.ui.settings
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.button.MaterialButtonToggleGroup
+import com.joecoding.weatheralert.R
 import com.joecoding.weatheralert.databinding.FragmentSettingBinding
 import com.joecoding.weatheralert.providers.SharedPreferencesProvider
+import kotlinx.android.synthetic.main.fragment_setting.view.*
 
 
 class SettingFragment : Fragment() {
@@ -20,14 +28,11 @@ class SettingFragment : Fragment() {
     lateinit var sharedPref: SharedPreferencesProvider
 
 
-    var imperialIsCheched:Boolean = false
-    var metricIsCheched:Boolean = false
+    private var language:String="en"
+    private var units:String="metric"
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         _binding = FragmentSettingBinding.inflate(inflater, container, false)
 
@@ -40,56 +45,57 @@ class SettingFragment : Fragment() {
 
     }
 
+    @SuppressLint("ResourceAsColor")
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val c = activity?.getSharedPreferences("imperial",Context.MODE_PRIVATE)
 
         sharedPref = SharedPreferencesProvider(requireContext())
 
-       // sharedPref.isUnitsConvertedToImperial
-
-        binding.ImperialChecked.setOnClickListener(View.OnClickListener {
-                if(imperialIsCheched){
-                    binding.ImperialChecked.speed=-1f
-                    binding.ImperialChecked.playAnimation()
-                    imperialIsCheched=false
-                    sharedPref.convertUnitsToImperial(false)
-
-                }else{
-                    binding.ImperialChecked.speed=1f
-                    binding.ImperialChecked.playAnimation()
-                    binding.MetricChecked.speed=-1f
-                    binding.MetricChecked.playAnimation()
-                    imperialIsCheched=true
-                    metricIsCheched=false
-                    sharedPref.convertUnitsToImperial(true)
-                    sharedPref.convertUnitsToMetric(false)
+        binding.toggleButtonGroupUnits.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (isChecked) {
+                when (checkedId) {
+                    R.id.btnMetric -> {
+                        units="metric"
+                        showToast("metric")
+                    }
+                    R.id.btnImperial -> {
+                        units="imperial"
+                        showToast("imperial")
+                    }
                 }
-
-
-
-        })
-
-        binding.MetricChecked.setOnClickListener(View.OnClickListener {
-            if(metricIsCheched){
-                binding.MetricChecked.speed=-1f
-                binding.MetricChecked.playAnimation()
-                metricIsCheched=false
-                sharedPref.convertUnitsToMetric(false)
-            }else{
-                binding.MetricChecked.speed=1f
-                binding.MetricChecked.playAnimation()
-                binding.ImperialChecked.speed=-1f
-                binding.ImperialChecked.playAnimation()
-                metricIsCheched=true
-                imperialIsCheched=false
-                sharedPref.convertUnitsToImperial(false)
-                sharedPref.convertUnitsToMetric(true)
-
+                sharedPref.setUnit(units)
             }
+        }
+
+        binding.toggleButtonGroupLanguage.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (isChecked) {
+                when (checkedId) {
+                    R.id.arabicBtn -> {
+                        language="ar"
+                        showToast("Arabic")
+
+                    }
+                    R.id.englishBtn -> {
+                        language="en"
+                        showToast("English")
+
+                    }
+                }
+                sharedPref.setLanguage(language)
+            }
+
+        }
+
+        binding.addAlarmBtn.setOnClickListener(View.OnClickListener {
+            requireActivity().recreate()
         })
 
 
+    }
+
+    private fun showToast(str: String) {
+        Toast.makeText(requireContext(), str, Toast.LENGTH_SHORT).show()
     }
 
 }

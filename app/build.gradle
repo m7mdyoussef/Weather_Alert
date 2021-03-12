@@ -139,5 +139,30 @@ dependencies {
     //expandable FAB
     implementation 'com.github.imtuann:FloatingActionButtonExpandable:1.1.2'
 
+    //workManager
+    def work_version = "2.5.0"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+
+    //day Picker
+    implementation 'ca.antonious:materialdaypicker:0.7.4'
+
+    //glowButton
+    implementation 'com.github.SanojPunchihewa:GlowButton:1.0.0'
+
+    compile 'lib.kingja.switchbutton:switchbutton:1.1.8'
+
+    implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-alpha-1'
+
+    implementation 'com.cuberto:liquid-swipe:1.0.0'
+
+    //EventBus
+    implementation 'org.greenrobot:eventbus:3.2.0'
+
+    //swipeToRefresh
+    implementation 'com.github.recruit-lifestyle:WaveSwipeRefreshLayout:1.6'
+
+    //wave view
+    implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-alpha-1'
+
 
 }

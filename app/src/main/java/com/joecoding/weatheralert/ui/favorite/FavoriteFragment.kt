@@ -10,20 +10,21 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.joecoding.weatheralert.R
 import com.joecoding.weatheralert.adapter.FavoriteAdapter
 import com.joecoding.weatheralert.databinding.FragmentFavoriteBinding
-import com.joecoding.weatheralert.model.currentWeatherModel.db.localSourceDB.pojo.FavoriteModel
+import com.joecoding.weatheralert.model.currentWeatherModel.db.localSourceDB.pojo.favoritePlacesModel.FavoriteModel
+import com.joecoding.weatheralert.providers.SharedPreferencesProvider
 import com.joecoding.weatheralert.ui.favoriteDetails.FavoriteDetailsActivity
 import com.mapbox.api.geocoding.v5.models.CarmenFeature
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceAutocompleteFragment
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceSelectionListener
 import com.tuann.floatingactionbuttonexpandable.FloatingActionButtonExpandable
+import org.greenrobot.eventbus.EventBus
 import java.math.BigDecimal
 import java.math.RoundingMode
+
 
 
 class FavoriteFragment : Fragment() {
@@ -35,15 +36,20 @@ class FavoriteFragment : Fragment() {
     private var favoriteAdapter: FavoriteAdapter? = null
     private lateinit var favoriteViewModel: FavoriteViewModel
     private lateinit var intent: Intent
-  //  lateinit var itemTochHelper: ItemTouchHelper.SimpleCallback
-
 
     var latDecimal: BigDecimal? = null
      var lonDecimal: BigDecimal? = null
      var address: String? = null
 
+    lateinit var sharedPref: SharedPreferencesProvider
+
+
     private lateinit var swipedLat: String
     private lateinit var swipedLng: String
+
+    private lateinit var latit: String
+    private lateinit var longit: String
+
 
 
 
@@ -58,6 +64,7 @@ class FavoriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedPref = SharedPreferencesProvider(requireContext())
 
         favoriteViewModel = ViewModelProvider.AndroidViewModelFactory
             .getInstance(requireActivity().application)
@@ -67,24 +74,24 @@ class FavoriteFragment : Fragment() {
         fab.setOnClickListener {
             fab.collapse(true)
             showAutoCompleteBar()
+            binding.emptyImageFav.visibility=View.GONE
+            binding.EmptylisttxtFav.visibility=View.GONE
         }
 
         //update RecyclerView
         favoriteViewModel.fetchFavorite().observe(viewLifecycleOwner, Observer {
-
-            if(it != null) {
-                placesList = it as MutableList<FavoriteModel>
-                favoriteAdapter = FavoriteAdapter(placesList, favoriteViewModel)
-                // ItemTouchHelper(itemTochHelper).attachToRecyclerView(binding.recyclerView)
-                binding.recyclerView.adapter = favoriteAdapter
-                binding.recyclerView.layoutManager =
-                    LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-                binding.recyclerView.setHasFixedSize(true)
-                favoriteAdapter?.notifyDataSetChanged()
+            placesList = it as MutableList<FavoriteModel>
+            favoriteAdapter = FavoriteAdapter(placesList, favoriteViewModel)
+            binding.recyclerView.adapter = favoriteAdapter
+            binding.recyclerView.layoutManager =
+                LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            binding.recyclerView.setHasFixedSize(true)
+            favoriteAdapter?.notifyDataSetChanged()
+            if(it.isEmpty()) {
+                binding.emptyImageFav.visibility=View.VISIBLE
+                binding.EmptylisttxtFav.visibility=View.VISIBLE
             }
         })
-
-
 
 
         // fetch weather data when click to search item
@@ -95,38 +102,16 @@ class FavoriteFragment : Fragment() {
         favoriteViewModel.getNavigation().observe(viewLifecycleOwner, Observer {
             //it = placesList item clicked data --> [lat,lng] in favoriteAdapter
             if(it != null) {
+
+                latit = it[0]
+                longit = it[1]
+                sharedPref.setLatLongFav(latit,longit)
                 intent.putExtra("lat", it[0])
                 intent.putExtra("lng", it[1])
 
                 activity?.startActivity(intent)
             }
         })
-
-
-
-/*
-        itemTochHelper = object :
-            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                placesList.removeAt(viewHolder.adapterPosition)
-
-                favoriteAdapter?.notifyDataSetChanged()
-                favoriteAdapter?.notifyItemRemoved(viewHolder.adapterPosition)
-
-                // get lat lng for item to pass it to swap for delete item
-//                favoriteViewModel.getNavigation().observe(viewLifecycleOwner, Observer {
-//                    favoriteViewModel.deleteItem(it[0],it[1])
-//                })
-
-
-            }
-        }
-
-*/
     }
 
 
@@ -141,7 +126,6 @@ class FavoriteFragment : Fragment() {
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(carmenFeature: CarmenFeature) {
 
-                // TODO: Use the longitude and latitude and place name
 
                val latitude = carmenFeature.center()?.latitude()
                val longitude = carmenFeature.center()?.longitude()
@@ -150,10 +134,15 @@ class FavoriteFragment : Fragment() {
                 lonDecimal = longitude?.let { BigDecimal(it).setScale(4,RoundingMode.HALF_DOWN) }
                 address = carmenFeature.text().toString()
 
-                val favModel: FavoriteModel = FavoriteModel(address,latDecimal.toString(),lonDecimal.toString())
+                val favModel: FavoriteModel =
+                    FavoriteModel(
+                        address,
+                        latDecimal.toString(),
+                        lonDecimal.toString()
+                    )
                 //insert to fav places table
                 favoriteViewModel.insertFavorite(favModel)
-                // insert to data table
+                // insert to weather data table
                 favoriteViewModel.insertFavoriteToDataBase(latDecimal.toString(),lonDecimal.toString())
 
                 Toast.makeText(context,"latitude ${carmenFeature.center()?.latitude()} \n" +
@@ -179,6 +168,11 @@ class FavoriteFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d("destroyyyyyyyyyyyyyyy", "onDestroy:tttttttttttttttttttttttt ")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding=null
     }
 
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.welcom.WelcomActivity1">
+
+    <com.cuberto.liquid_swipe.LiquidPager
+        android:id="@+id/pager"
+        android:layout_width="411dp"
+        android:layout_height="731dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.sanojpunchihewa.glowbutton.GlowButton
+        android:id="@+id/skip"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="29dp"
+        android:onClick="skip"
+        android:padding="20dp"
+        android:text="@string/skip"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        app:buttonColor="@color/colorPrimaryDark"
+        app:cornerRadius="10dp"
+        app:glowColor="@color/purpul"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/pager"
+        app:pressedGlowSize="20dp"
+        app:unpressedGlowSize="8dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

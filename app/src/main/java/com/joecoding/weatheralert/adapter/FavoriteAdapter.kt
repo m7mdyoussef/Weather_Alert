@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.joecoding.weatheralert.R
-import com.joecoding.weatheralert.model.currentWeatherModel.db.localSourceDB.pojo.FavoriteModel
+import com.joecoding.weatheralert.model.currentWeatherModel.db.localSourceDB.pojo.favoritePlacesModel.FavoriteModel
 import com.joecoding.weatheralert.ui.favorite.FavoriteViewModel
 import kotlinx.android.synthetic.main.list_item_favorite.view.*
 

@@ -53,5 +53,8 @@ data class DailyItem(
 	val humidity: Int? = null,
 
 	@field:SerializedName("wind_speed")
-	val windSpeed: Double? = null
+	val windSpeed: Double? = null,
+
+	@field:SerializedName("rain")
+	val rain: Double? = null
 )

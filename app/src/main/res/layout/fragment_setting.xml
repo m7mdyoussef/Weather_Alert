@@ -3,75 +3,127 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:backgroundTint="#00BCD4"
+    android:foregroundTint="#FFFFFF">
 
-    <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="0dp"
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="68dp"
+        android:text="@string/change_units"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/language"
+        app:layout_constraintTop_toBottomOf="@+id/language" />
+
+    <TextView
+        android:id="@+id/language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="50dp"
+        android:text="@string/change_language"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.sanojpunchihewa.glowbutton.GlowButton
+        android:id="@+id/addAlarmBtn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="104dp"
+        android:padding="20dp"
+        android:text="@string/save"
+        android:textColor="#ffffff"
+        app:buttonColor="@color/colorPrimaryDark"
+        app:cornerRadius="10dp"
+        app:glowColor="@color/purpul"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/toggleButtonGroupUnits"
+        app:pressedGlowSize="20dp"
+        app:unpressedGlowSize="8dp"
+        android:textSize="18sp"/>
 
-        <TextView
-            android:id="@+id/textView"
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggleButtonGroupLanguage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/language"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/language"
+        app:layout_constraintTop_toTopOf="@+id/language"
+        app:singleSelection="true">
+
+
+        <Button
+            android:id="@+id/arabicBtn"
+            style="@style/ToggleButtonWithIconOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="48dp"
-            android:layout_marginTop="104dp"
-            android:text="Change Units"
-            android:textSize="24sp" />
+            app:icon="@drawable/ic_egypt_"
+            app:iconTint="@android:color/transparent"
+            app:iconTintMode="screen"
+            tools:layout_editor_absoluteX="173dp"
+            tools:layout_editor_absoluteY="251dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/englishBtn"
+            style="@style/ToggleButtonWithIconOnly"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/metric"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="16dp"
-                android:text="Metric Units"
-                android:textSize="24sp" />
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/MetricChecked"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="50dp"
-                app:lottie_rawRes="@raw/checking" />
+            app:icon="@drawable/ic_united_kingdom"
+            app:iconTint="#00FFFFFF"
+            app:iconTintMode="add"
+            tools:layout_editor_absoluteX="166dp"
+            tools:layout_editor_absoluteY="340dp" />
 
 
-        </LinearLayout>
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggleButtonGroupUnits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="@+id/toggleButtonGroupLanguage"
+        app:layout_constraintStart_toStartOf="@+id/toggleButtonGroupLanguage"
+        app:layout_constraintTop_toTopOf="@+id/textView"
+        app:singleSelection="true">
+
+
+        <Button
+            android:id="@+id/btnMetric"
+            style="@style/ToggleButtonWithIconOnly"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:text="@string/metric_Choice"
+            app:iconTint="#00FFFFFF"
+            app:iconTintMode="src_atop"
+            app:rippleColor="#000000"
+            tools:layout_editor_absoluteX="173dp"
+            tools:layout_editor_absoluteY="251dp" />
 
-            <TextView
-                android:id="@+id/imperial"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="16dp"
-                android:text="Imperial Units"
-                android:textSize="24sp" />
+        <Button
+            android:id="@+id/btnImperial"
+            style="@style/ToggleButtonWithIconOnly"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/imperial_Choice"
+            app:iconTint="#00FFFFFF"
+            app:iconTintMode="src_atop"
+            app:rippleColor="#000000"
+            tools:layout_editor_absoluteX="166dp"
+            tools:layout_editor_absoluteY="340dp" />
 
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/ImperialChecked"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="32dp"
-                app:lottie_rawRes="@raw/checking" />
-        </LinearLayout>
-    </LinearLayout>
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

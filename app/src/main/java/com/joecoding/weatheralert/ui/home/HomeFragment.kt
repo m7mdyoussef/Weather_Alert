@@ -29,12 +29,12 @@ import com.joecoding.weatheralert.R
 import com.joecoding.weatheralert.adapter.MainAdapter
 import com.joecoding.weatheralert.databinding.FragmentHomeBinding
 import com.joecoding.weatheralert.model.currentWeatherModel.db.remoteSourceDB.response.HourlyItem
+import com.joecoding.weatheralert.network.ApiUnits
 import com.joecoding.weatheralert.providers.SharedPreferencesProvider
+import jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.ZoneId
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -52,17 +52,101 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
 
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onStart() {
+        super.onStart()
+        // Checking for first time launch - before calling setContentView()
+        sharedPref = SharedPreferencesProvider(requireContext())
+        if (sharedPref.isFirstTimeLaunch) { // if not the first time
+            CheckStatus()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun CheckStatus(){
+        if(!isConnected()){
+            showDialog()
+            Toast.makeText(requireContext(), getString(R.string.connectionFailed), Toast.LENGTH_LONG).show()
+        }else if(isConnected()){
+            if (!checkLocation()){
+                showLocationDialog(getString(R.string.loc),getString(R.string.enablelocation))
+            }
+        }
+        if(isConnected() && checkLocation()){
+            sharedPref.setFirstTimeLaunch(false)
+        }
+
+    }
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun isConnected(): Boolean {
+        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                //   Log.i(Constants.LOG_TAG, "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                //  Log.i(Constants.LOG_TAG, "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                //   Log.i(Constants.LOG_TAG, "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
+            }
+        }
+        return false
+    }
+    private fun showDialog(){
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setMessage(getString(R.string.checkInterNet))
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.connect)){
+                    dialog, which ->
+                startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+
+                dialog.dismiss()
+            }
+            .setNegativeButton(getString(R.string.exit)){
+                    dialog, which ->  requireActivity().finish()
+                dialog.dismiss()
+            }
+            .show()
+    }
+    private fun showLocationDialog(alertTitle: String, message: String) {
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle(alertTitle)
+            .setMessage(message)
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.enablelocation_)){
+                    dialog, which ->
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                dialog.dismiss()
+            }
+            .setNegativeButton(getString(R.string.exit)){
+                    dialog, which -> requireActivity().finish()
+                dialog.dismiss()
+            }
+            .show()
+
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.refresh.setOnRefreshListener(WaveSwipeRefreshLayout.OnRefreshListener {
+            getLatestLocation()
+            viewModel.getWeather().observe(viewLifecycleOwner, Observer {
+                binding.refresh.isRefreshing = it == null
+            })
+                Toast.makeText(requireActivity(),getString(R.string.refresh),Toast.LENGTH_SHORT).show()
+            })
+
         sharedPref = SharedPreferencesProvider(requireActivity().application)
-        CheckStatus()
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity().application)
         getLatestLocation()
-
-
 
         viewModel = ViewModelProvider.AndroidViewModelFactory
             .getInstance(requireActivity().application)
@@ -71,6 +155,7 @@ class HomeFragment : Fragment() {
         viewModel.getWeather().observe(viewLifecycleOwner, Observer {
 
             if(it != null) {
+                binding.refresh.isRefreshing=false
                 val hourly: List<HourlyItem?>? = it.hourly
                 mainAdapter = MainAdapter(hourly)
 
@@ -87,49 +172,80 @@ class HomeFragment : Fragment() {
                 val dt = it.current?.dt
 
                 binding.tvTempeatur.text =
-                    String.format(Locale.getDefault(), "%.0f°C", it.current?.temp)
+                    String.format(Locale.getDefault(), "%.0f°${ApiUnits.tempUnit}", it.current?.temp)
                 binding.feelsLike.text =
-                    String.format(Locale.getDefault(), "%.0f°C", it.current?.feelsLike)
+                    String.format(Locale.getDefault(), "%.0f°${ApiUnits.tempUnit}", it.current?.feelsLike)
                 binding.location.text = it.timezone.toString()
                 binding.tvWeather.text = description.toString()
-                binding.windSpeedTxt.text = it.current?.windSpeed.toString() + " m/s"
+                binding.windSpeedTxt.text = it.current?.windSpeed.toString() + " ${ApiUnits.WindSpeedUnit}"
                 binding.humidityTxt.text = it.current?.humidity.toString() + " %"
                 binding.pressure.text = it.current?.pressure.toString() + " hpa"
                 binding.clouds.text = it.current?.clouds.toString() + " %"
 
-                val simpleDateFormat = SimpleDateFormat("dd MMMM yyyy, hh:mm a", Locale.ENGLISH)
+                val simpleDateFormat = SimpleDateFormat("dd MMMM yyyy, hh:mm a", Locale(sharedPref.getLanguage.toString()))
                 val format = simpleDateFormat.format(dt?.times(1000L))
                 binding.DateTxt.text = format
 
-                when (description) {
-                    "broken clouds" -> {
-                        binding.iconTemp.setAnimation(R.raw.broken_clouds)
+                binding.iconTemp.setAnimation(R.raw.broken_clouds)
 
+                when (it.current?.weather?.get(0)?.icon) {
+                    "04d" -> {
+                        binding.iconTemp.setAnimation(R.raw.broken_clouds)
                     }
-                    "light rain" -> {
+                    "04n" -> {
+                        binding.iconTemp.setAnimation(R.raw.broken_clouds)
+                    }
+                    "10d" -> {
                         binding.iconTemp.setAnimation(R.raw.light_rain)
                     }
-                    "haze" -> {
-                        binding.iconTemp.setAnimation(R.raw.broken_clouds)
+                    "10n" -> {
+                        binding.iconTemp.setAnimation(R.raw.light_rain)
                     }
-                    "overcast clouds" -> {
-                        binding.iconTemp.setAnimation(R.raw.overcast_clouds)
-                    }
-                    "moderate rain" -> {
-                        binding.iconTemp.setAnimation(R.raw.moderate_rain)
-                    }
-                    "few clouds" -> {
-                        binding.iconTemp.setAnimation(R.raw.few_clouds)
-                    }
-                    "heavy intensity rain" -> {
+                    "09d" -> {
                         binding.iconTemp.setAnimation(R.raw.heavy_intentsity)
                     }
-                    "clear sky" -> {
+                    "09n" -> {
+                        binding.iconTemp.setAnimation(R.raw.heavy_intentsity)
+                    }
+                    "03d" -> {
+                        binding.iconTemp.setAnimation(R.raw.overcast_clouds)
+                    }
+                    "03n" -> {
+                        binding.iconTemp.setAnimation(R.raw.overcast_clouds)
+                    }
+
+                    "02d" -> {
+                        binding.iconTemp.setAnimation(R.raw.few_clouds)
+                    }
+                    "02n" -> {
+                        binding.iconTemp.setAnimation(R.raw.few_clouds)
+                    }
+
+                    "01d" -> {
                         binding.iconTemp.setAnimation(R.raw.clear_sky)
                     }
-                    "scattered clouds" -> {
-                        binding.iconTemp.setAnimation(R.raw.scattered_clouds)
+                    "01n" -> {
+                        binding.iconTemp.setAnimation(R.raw.clear_sky)
                     }
+                    "11d" -> {
+                        binding.iconTemp.setAnimation(R.raw.thunderstorm)
+                    }
+                    "11n" -> {
+                        binding.iconTemp.setAnimation(R.raw.thunderstorm)
+                    }
+                    "13d" -> {
+                        binding.iconTemp.setAnimation(R.raw.snow)
+                    }
+                    "13n" -> {
+                        binding.iconTemp.setAnimation(R.raw.snow)
+                    }
+                    "50d" -> {
+                        binding.iconTemp.setAnimation(R.raw.mist)
+                    }
+                    "50n" -> {
+                        binding.iconTemp.setAnimation(R.raw.mist)
+                    }
+
                     else -> {
                         binding.iconTemp.setAnimation(R.raw.unknown)
                     }
@@ -140,8 +256,6 @@ class HomeFragment : Fragment() {
 
     }
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -149,7 +263,6 @@ class HomeFragment : Fragment() {
 
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
 
         return binding.root
     }
@@ -165,41 +278,15 @@ class HomeFragment : Fragment() {
                 }
                 val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity().application)
                 fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
-            } else {
-
-                val firstTimeLaunch = sharedPref.isFirstTimeLaunch
-                if(firstTimeLaunch){
-                    val firstTimeLocationEnabled = sharedPref.isFirstTimeLocationEnabled
-                    if(firstTimeLocationEnabled) {
-                        showErrorDialog("Location","Kindly enable Location to use Application properly")
-                    }
-                }
-
+            }
+            else {
+                showLocationDialog(getString(R.string.location_),getString(R.string.enablelocation))
             }
         } else {
             requestPermission()
         }
     }
 
-
-
-    private fun showErrorDialog(alertTitle: String, message: String) {
-        val builder = AlertDialog.Builder(requireActivity().application)
-        builder.setTitle(alertTitle)
-            .setMessage(message)
-            .setCancelable(false)
-            .setPositiveButton("Enable Location"){
-                    dialog, which ->
-                startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
-                dialog.dismiss()
-            }
-            .setNegativeButton("Exit"){
-                    dialog, which ->  requireActivity().finish()
-                dialog.dismiss()
-            }
-            .show()
-
-    }
 
     private fun isPermissionGranted(): Boolean {
         return ActivityCompat.checkSelfPermission(requireActivity().application, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
@@ -227,10 +314,6 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun enableLocation() {
-        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-        startActivity(intent)
-    }
 
     private fun requestPermission() {
         ActivityCompat.requestPermissions(requireActivity(),
@@ -246,45 +329,9 @@ class HomeFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    fun CheckStatus(){
-        if(!isConnected()){
-            showDialog()
-            Toast.makeText(requireActivity(), "connection failed", Toast.LENGTH_LONG)
-                .show()
-        }
-    }
-    @RequiresApi(Build.VERSION_CODES.M)
-    fun isConnected(): Boolean {
-        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-        if (capabilities != null) {
-            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                //   Log.i(Constants.LOG_TAG, "NetworkCapabilities.TRANSPORT_CELLULAR")
-                return true
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                //  Log.i(Constants.LOG_TAG, "NetworkCapabilities.TRANSPORT_WIFI")
-                return true
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                //   Log.i(Constants.LOG_TAG, "NetworkCapabilities.TRANSPORT_ETHERNET")
-                return true
-            }
-        }
-        return false
-    }
-    private fun showDialog(){
-        val builder = AlertDialog.Builder(requireActivity())
-        builder.setMessage("Please check the Internet to proceed further")
-            .setCancelable(false)
-            .setPositiveButton("Connect"){
-                    dialog, which ->
-                startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
-                dialog.dismiss()
-            }
-            .setNegativeButton("Exit"){
-                    dialog, which ->  requireActivity().finish()
-                dialog.dismiss()
-            }
-            .show()
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding=null
     }
 }

@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="#ECECEC"
+    >
+
 
 
     <FrameLayout
@@ -13,7 +16,10 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toTopOf="@+id/bnv_Main"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="60dp"
+        />
 
 
     <com.etebarian.meowbottomnavigation.MeowBottomNavigation
@@ -21,17 +27,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:mbn_backgroundBottomColor="#ffffff"
+        app:mbn_backgroundBottomColor="#6452f0"
         app:mbn_circleColor="#ffffff"
         app:mbn_countBackgroundColor="#ff6f00"
-        app:mbn_countTextColor="#ffffff"
-        app:mbn_defaultIconColor="#90a4ae"
+        app:mbn_countTextColor="@color/purpul"
+        app:mbn_defaultIconColor="#ffffff"
         app:mbn_rippleColor="#2f424242"
-        app:mbn_selectedIconColor="#3c415e"
+        app:mbn_selectedIconColor="#6452f0"
         app:mbn_shadowColor="#1f212121" />
 
 
@@ -41,8 +46,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="60dp"
         android:text="@string/next15Dayes"
+        android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="12sp"
         android:textStyle="bold"
@@ -50,7 +56,7 @@
         android:visibility="visible"
         app:backgroundTint="#6452f0"
         app:iconTint="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@+id/bnv_Main"
+        app:layout_constraintBottom_toBottomOf="@+id/bnv_Main"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
