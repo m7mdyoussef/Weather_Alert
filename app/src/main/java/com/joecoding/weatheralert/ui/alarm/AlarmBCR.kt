@@ -8,6 +8,8 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -23,9 +25,6 @@ import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-
-
 class AlarmBCR : BroadcastReceiver() {
     val notificationId = "NOTIFICATION_CHANNEL_ID"
     lateinit var con: Context
@@ -35,7 +34,9 @@ class AlarmBCR : BroadcastReceiver() {
     var result = ""
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context, intent: Intent) {
+
             con=context
+
         val alarmId = intent.getIntExtra("ITEM_ID", -1)
         Log.d("Alarm recieved", alarmId.toString())
         repo = Repository(context.applicationContext as Application)
@@ -51,9 +52,8 @@ class AlarmBCR : BroadcastReceiver() {
              alarmResponse= LocalSourceDB.getInstance(context.applicationContext as Application).alarmDao().getAlarmById(alarmId)
         }
 
-        //showNotification()
 
-        Toast.makeText(context,"notification",Toast.LENGTH_SHORT).show()
+
         checkData(alarmResponse)
     }
 
@@ -196,9 +196,10 @@ class AlarmBCR : BroadcastReceiver() {
         } else {
             builder = Notification.Builder(con)
         }
+        builder.setSmallIcon(R.mipmap.ic_launcher_round)
+        builder.setTicker(con.getString(R.string.alert))
         builder.setContentTitle("Weather Alert")
         builder.setContentText(con.getString(R.string.becareful))
-        builder.setSmallIcon(R.drawable.alarm)
         builder.setStyle(Notification.BigTextStyle().bigText(result))
         val notification: Notification = builder.build()
         manager.notify(10, notification)

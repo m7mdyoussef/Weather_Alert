@@ -1,5 +1,6 @@
 package com.joecoding.weatheralert.adapter
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,8 +19,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MainAdapter(private val items: List<HourlyItem?>?) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
+class MainAdapter(private val mContext: Context, private val items: List<HourlyItem?>?) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
+    lateinit var sharedPref: SharedPreferencesProvider
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_main, parent, false)
@@ -27,6 +29,8 @@ class MainAdapter(private val items: List<HourlyItem?>?) : RecyclerView.Adapter<
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        sharedPref=SharedPreferencesProvider(mContext)
+
         val data = items?.get(position)
         val generator = ColorGenerator.MATERIAL
 
@@ -35,7 +39,7 @@ class MainAdapter(private val items: List<HourlyItem?>?) : RecyclerView.Adapter<
         holder.cvListWeather.setCardBackgroundColor(color)
 
 
-        val simpleDateFormat = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
+        val simpleDateFormat = SimpleDateFormat("hh:mm a", Locale(sharedPref.getLanguage.toString()))
         val format = simpleDateFormat.format(data?.dt?.times(1000L))
 
         holder.tvTime.text =format

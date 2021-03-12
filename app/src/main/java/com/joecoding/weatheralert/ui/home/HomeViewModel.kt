@@ -13,9 +13,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application){
 
 
     fun getWeather(): LiveData<CurrentWeatherModel> {
-
         currentWeatherLiveData= repository.fetchData()
-
         return currentWeatherLiveData
     }
 

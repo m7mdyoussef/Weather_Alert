@@ -107,4 +107,13 @@
     <string name="location_">Location</string>
     <string name="emptyList">Empty List !! Please Add Some</string>
     <string name="welcome1">"Welcom "</string>
+    <string name="addalarmperm">to add another alert, please un check the alarm switch first</string>
+    <string name="settings">Settings</string>
+    <string name="temp_Settings">Temperature</string>
+    <string name="windSpeed_settings">Wind speed</string>
+    <string name="C">C</string>
+    <string name="F">F</string>
+    <string name="mpersec">m/sec</string>
+    <string name="mileperhr">mile/hr</string>
+    <string name="alert">Alert</string>
 </resources>

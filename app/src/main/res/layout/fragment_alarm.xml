@@ -205,7 +205,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="5dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:fab_bg_color="@color/blue"
         app:fab_content="@string/addAlarm"
         app:fab_duration="400"

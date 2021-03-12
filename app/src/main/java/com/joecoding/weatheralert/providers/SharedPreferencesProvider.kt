@@ -20,6 +20,11 @@ class SharedPreferencesProvider(context: Context) {
 
         // Shared preferences for internet
         private const val IS_THE_INTERNET_ENABLED = "IS_THE_INTERNET_ENABLED"
+        private const val IS_AlARM_SWITCHED_ON = "IS_AlARM_SWITCHED_ON"
+
+        private const val LANGUAGE_BTN_CHECKED_ID = "LANGUAGE_BTN_CHECKED_ID"
+        private const val UNITS_BTN_CHECKED_ID = "UNITS_BTN_CHECKED_ID"
+
 
         // Shared preferences for LAT_LONG
         private const val LAT_SHARED_PREF = "LAT_SHARED_PREF"
@@ -89,12 +94,12 @@ class SharedPreferencesProvider(context: Context) {
     /***********************************************************************************************
      */
     fun alarmSwitchedOn(converted: Boolean){
-        editor.putBoolean(METRIC_UNITS_SHARED_PREF, converted)
+        editor.putBoolean(IS_AlARM_SWITCHED_ON, converted)
         editor.commit()
     }
 
     val isAlarmSwitchedOn: Boolean
-        get()= pref.getBoolean(METRIC_UNITS_SHARED_PREF, false)
+        get()= pref.getBoolean(IS_AlARM_SWITCHED_ON, false)
 
     /***********************************************************************************************
      */
@@ -140,6 +145,23 @@ class SharedPreferencesProvider(context: Context) {
             location[1] = lng
             return location
         }
+    /***********************************************************************************************
+     */
 
+    fun setLanguageBtnId(id:Int){
+        editor.putInt(LANGUAGE_BTN_CHECKED_ID,id)
+        editor.apply()
+    }
 
+    val getLanguageBtnId : Int
+        get()= pref.getInt(LANGUAGE_BTN_CHECKED_ID,1)
+    /***********************************************************************************************
+     */
+    fun setUnitsBtnId(id:Int){
+        editor.putInt(UNITS_BTN_CHECKED_ID,id)
+        editor.apply()
+    }
+
+    val getUnitsBtnId : Int
+        get()= pref.getInt(UNITS_BTN_CHECKED_ID,1)
 }

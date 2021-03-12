@@ -86,7 +86,6 @@ class AlarmFragment : Fragment() {
         binding.rvListWeatherHome.setHasFixedSize(true)
 
         alarmViewModel.fetchAlarmItems().observe(viewLifecycleOwner, Observer {
-            Toast.makeText(context,"observe", Toast.LENGTH_LONG).show()
 
             alarmAdapter.setIncomingList(it)
                 alarmList= it as MutableList<AlarmModel>
@@ -95,6 +94,8 @@ class AlarmFragment : Fragment() {
 
                 binding.emptyImage.visibility=View.VISIBLE
                 binding.emptyListTxt.visibility=View.VISIBLE
+                binding.fabAlarm.visibility=View.VISIBLE
+                binding.alarmCheck.isChecked = false
             }
         })
 
@@ -115,6 +116,8 @@ class AlarmFragment : Fragment() {
                 binding.fornextradioGroup.isActivated = false
                 sharedPref.alarmSwitchedOn(true)
                 binding.fabAlarm.visibility=View.GONE
+                Toast.makeText(context,getString(R.string.addalarmperm), Toast.LENGTH_LONG).show()
+
                 registerAll()
             } else {
                 Toast.makeText(requireContext(), getString(R.string.alarmoff), Toast.LENGTH_SHORT).show()

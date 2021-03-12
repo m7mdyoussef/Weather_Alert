@@ -149,7 +149,7 @@ dependencies {
     //glowButton
     implementation 'com.github.SanojPunchihewa:GlowButton:1.0.0'
 
-    compile 'lib.kingja.switchbutton:switchbutton:1.1.8'
+    implementation 'lib.kingja.switchbutton:switchbutton:1.1.8'
 
     implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-alpha-1'
 

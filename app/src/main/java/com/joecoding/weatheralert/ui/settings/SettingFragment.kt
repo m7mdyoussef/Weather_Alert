@@ -1,5 +1,4 @@
 package com.joecoding.weatheralert.ui.settings
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
@@ -17,11 +16,8 @@ import com.joecoding.weatheralert.R
 import com.joecoding.weatheralert.databinding.FragmentSettingBinding
 import com.joecoding.weatheralert.providers.SharedPreferencesProvider
 import kotlinx.android.synthetic.main.fragment_setting.view.*
-
-
 class SettingFragment : Fragment() {
 
-    lateinit var viewModel: SettingsViewModel
     private var _binding: FragmentSettingBinding? = null
     private val binding get() = _binding!!
 
@@ -36,10 +32,6 @@ class SettingFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentSettingBinding.inflate(inflater, container, false)
 
-        viewModel = ViewModelProvider.AndroidViewModelFactory
-            .getInstance(requireActivity().application)
-            .create(SettingsViewModel::class.java)
-
         return binding.root
 
 
@@ -53,6 +45,7 @@ class SettingFragment : Fragment() {
         sharedPref = SharedPreferencesProvider(requireContext())
 
         binding.toggleButtonGroupUnits.addOnButtonCheckedListener { group, checkedId, isChecked ->
+
             if (isChecked) {
                 when (checkedId) {
                     R.id.btnMetric -> {
@@ -74,12 +67,10 @@ class SettingFragment : Fragment() {
                     R.id.arabicBtn -> {
                         language="ar"
                         showToast("Arabic")
-
                     }
                     R.id.englishBtn -> {
                         language="en"
                         showToast("English")
-
                     }
                 }
                 sharedPref.setLanguage(language)
@@ -91,11 +82,12 @@ class SettingFragment : Fragment() {
             requireActivity().recreate()
         })
 
-
     }
 
     private fun showToast(str: String) {
         Toast.makeText(requireContext(), str, Toast.LENGTH_SHORT).show()
     }
+
+
 
 }

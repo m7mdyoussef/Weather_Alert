@@ -63,11 +63,11 @@ class LocationProvider : AppCompatActivity() {
                                 Toast.makeText(
                                     this@LocationProvider,
                                     """my longitude : ${location.longitude}
- my latitude : ${location.latitude}
- my location is: """ + addressList!![0]
+                                       my latitude : ${location.latitude}
+                                       my location is: """ + addressList!![0]
                                         .getAddressLine(0),
                                     Toast.LENGTH_LONG
-                                ).show()
+                                    ).show()
                             }
                         }
                 } else {

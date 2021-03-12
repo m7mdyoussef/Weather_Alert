@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -32,6 +33,7 @@ import com.joecoding.weatheralert.model.currentWeatherModel.db.remoteSourceDB.re
 import com.joecoding.weatheralert.network.ApiUnits
 import com.joecoding.weatheralert.providers.SharedPreferencesProvider
 import jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout
+import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
@@ -51,7 +53,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-
+    var address: String = ""
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onStart() {
@@ -138,6 +140,7 @@ class HomeFragment : Fragment() {
         binding.refresh.setOnRefreshListener(WaveSwipeRefreshLayout.OnRefreshListener {
             getLatestLocation()
             viewModel.getWeather().observe(viewLifecycleOwner, Observer {
+
                 binding.refresh.isRefreshing = it == null
             })
                 Toast.makeText(requireActivity(),getString(R.string.refresh),Toast.LENGTH_SHORT).show()
@@ -157,7 +160,7 @@ class HomeFragment : Fragment() {
             if(it != null) {
                 binding.refresh.isRefreshing=false
                 val hourly: List<HourlyItem?>? = it.hourly
-                mainAdapter = MainAdapter(hourly)
+                mainAdapter = MainAdapter(requireContext(),hourly)
 
 
            Log.d("dataaaaaaa", it.toString())
@@ -175,7 +178,21 @@ class HomeFragment : Fragment() {
                     String.format(Locale.getDefault(), "%.0f°${ApiUnits.tempUnit}", it.current?.temp)
                 binding.feelsLike.text =
                     String.format(Locale.getDefault(), "%.0f°${ApiUnits.tempUnit}", it.current?.feelsLike)
-                binding.location.text = it.timezone.toString()
+
+                val geocoderAddres=Geocoder(requireContext(), Locale(sharedPref.getLanguage.toString()))
+
+                try {
+                    if (sharedPref.getLanguage.toString()=="ar"){
+                        address = geocoderAddres.getFromLocation(it.lat,it.lon,1)[0].countryName ?: it.timezone.toString()
+                    }else{
+                        address = geocoderAddres.getFromLocation(it.lat,it.lon,1)[0].adminArea ?: it.timezone.toString()
+                        address+=",${geocoderAddres.getFromLocation(it.lat,it.lon,1)[0].countryName ?: it.timezone.toString()}"
+                    }
+                }catch (e: IOException){
+                    e.printStackTrace()
+                }
+
+                binding.location.text = address
                 binding.tvWeather.text = description.toString()
                 binding.windSpeedTxt.text = it.current?.windSpeed.toString() + " ${ApiUnits.WindSpeedUnit}"
                 binding.humidityTxt.text = it.current?.humidity.toString() + " %"
@@ -256,10 +273,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)

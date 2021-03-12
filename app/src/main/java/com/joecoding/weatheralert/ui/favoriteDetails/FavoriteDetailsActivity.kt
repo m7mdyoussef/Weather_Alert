@@ -1,6 +1,7 @@
 package com.joecoding.weatheralert.ui.favoriteDetails
 
 import android.content.Context
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import com.joecoding.weatheralert.model.currentWeatherModel.db.remoteSourceDB.re
 import com.joecoding.weatheralert.network.ApiUnits
 import com.joecoding.weatheralert.providers.MyContextWrapper
 import com.joecoding.weatheralert.providers.SharedPreferencesProvider
+import java.io.IOException
 
 import java.text.SimpleDateFormat
 import java.util.*
@@ -29,10 +31,9 @@ class FavoriteDetailsActivity : AppCompatActivity() {
 
     private var fabNextDaysFav : ExtendedFloatingActionButton? = null
     private lateinit var favoriteDetailsViewModel: FavoriteDetailsViewModel
-    private var currentWeatherData: CurrentWeatherModel? = null
     lateinit var sharedPref: SharedPreferencesProvider
     private lateinit var lang: String
-
+    var address: String = ""
     override fun attachBaseContext(newBase: Context?) {
         sharedPref = SharedPreferencesProvider(newBase!!)
         lang = sharedPref.getLanguage!!
@@ -69,7 +70,7 @@ class FavoriteDetailsActivity : AppCompatActivity() {
         favoriteDetailsViewModel.getFavoriteWeatherData(lat,lng).observe(this, Observer {
             if(it != null) {
                 val hourly: List<HourlyItem?>? = it.hourly
-                mainAdapter = MainAdapter(hourly)
+                mainAdapter = MainAdapter(this,hourly)
 
 
                 Log.d("dataaaaaaa", it.toString())
@@ -87,7 +88,21 @@ class FavoriteDetailsActivity : AppCompatActivity() {
                     String.format(Locale.getDefault(), "%.0f°${ApiUnits.tempUnit}", it.current?.temp)
                 binding.feelsLike.text =
                     String.format(Locale.getDefault(), "%.0f°${ApiUnits.tempUnit}", it.current?.feelsLike)
-                binding.location.text = it.timezone.toString()
+
+                val geocoderAddres= Geocoder(this, Locale(sharedPref.getLanguage.toString()))
+
+                try {
+                    if (sharedPref.getLanguage.toString()=="ar"){
+                        address = geocoderAddres.getFromLocation(it.lat,it.lon,1)[0].countryName ?: it.timezone.toString()
+                    }else{
+                        address = geocoderAddres.getFromLocation(it.lat,it.lon,1)[0].adminArea ?: it.timezone.toString()
+                        address+=",${geocoderAddres.getFromLocation(it.lat,it.lon,1)[0].countryName ?: it.timezone.toString()}"
+                    }
+                }catch (e: IOException){
+                    e.printStackTrace()
+                }
+
+                binding.location.text = address
                 binding.tvWeather.text = description.toString()
                 binding.windSpeedTxt.text = it.current?.windSpeed.toString() + " ${ApiUnits.WindSpeedUnit}"
                 binding.humidityTxt.text = it.current?.humidity.toString() + " %"
@@ -163,7 +178,6 @@ class FavoriteDetailsActivity : AppCompatActivity() {
 
 
             }
-            Log.d("recieved", it.toString())
 
         })
 
