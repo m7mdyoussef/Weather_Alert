@@ -50,11 +50,9 @@ class SettingFragment : Fragment() {
                 when (checkedId) {
                     R.id.btnMetric -> {
                         units="metric"
-                        showToast("metric")
                     }
                     R.id.btnImperial -> {
                         units="imperial"
-                        showToast("imperial")
                     }
                 }
                 sharedPref.setUnit(units)
@@ -66,11 +64,9 @@ class SettingFragment : Fragment() {
                 when (checkedId) {
                     R.id.arabicBtn -> {
                         language="ar"
-                        showToast("Arabic")
                     }
                     R.id.englishBtn -> {
                         language="en"
-                        showToast("English")
                     }
                 }
                 sharedPref.setLanguage(language)

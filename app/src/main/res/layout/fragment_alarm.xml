@@ -128,15 +128,17 @@
 
             </LinearLayout>
 
+
             <RadioGroup
                 android:id="@+id/fornextradioGroup"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="@+id/textView6"
-                app:layout_constraintStart_toEndOf="@+id/textView6"
-                app:layout_constraintTop_toTopOf="@+id/textView6">
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/checkEventLayout"
+                app:layout_constraintTop_toBottomOf="@+id/checkEventLayout">
 
                 <RadioButton
                     android:id="@+id/R24hr"
@@ -145,7 +147,7 @@
                     android:layout_marginEnd="10dp"
                     android:checked="true"
                     android:text="@string/_24hr"
-                    android:textColor="#ffffff"/>
+                    android:textColor="#ffffff" />
 
                 <RadioButton
                     android:id="@+id/R48hr"
@@ -153,28 +155,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:text="@string/_48hr"
-                    android:textColor="#ffffff"/>
+                    android:textColor="#ffffff" />
 
                 <RadioButton
                     android:id="@+id/R72hr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/_72hr"
-                    android:textColor="#ffffff"/>
+                    android:textColor="#ffffff" />
             </RadioGroup>
-
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="18dp"
-                android:text="@string/forNext"
-                android:textColor="#ffffff"
-                android:textSize="14sp"
-                android:textStyle="bold|italic"
-                app:layout_constraintStart_toStartOf="@+id/checkEventLayout"
-                app:layout_constraintTop_toBottomOf="@+id/checkEventLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -157,7 +157,6 @@ class AlarmAdapter(
        builder.setTitle(R.string.deleteAlarm)
        builder.setMessage(R.string.alarmMessage)
        builder.setPositiveButton(R.string.yes){ _, _ ->
-           Toast.makeText(context,"${items[pos].id} ${items[pos]} ",Toast.LENGTH_LONG).show()
            stopAlarm(items[pos].id)
            alarViewModel.deleteAlarmItem(items[pos].id)
            notifyDataSetChanged()

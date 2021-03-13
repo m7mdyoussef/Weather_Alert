@@ -145,10 +145,6 @@ class FavoriteFragment : Fragment() {
                 // insert to weather data table
                 favoriteViewModel.insertFavoriteToDataBase(latDecimal.toString(),lonDecimal.toString())
 
-                Toast.makeText(context,"latitude ${carmenFeature.center()?.latitude()} \n" +
-                        " longitude ${carmenFeature.center()?.longitude() } \n" +
-                        "location  ${carmenFeature.text()} \n"
-                    , Toast.LENGTH_LONG).show()
                 fab.expand()
                 activity?.supportFragmentManager?.beginTransaction()?.remove(autocompleteFragment)?.commit()
                 binding.placeAutoCompleteFrag.visibility= View.GONE

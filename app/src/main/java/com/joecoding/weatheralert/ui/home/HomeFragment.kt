@@ -46,7 +46,6 @@ class HomeFragment : Fragment() {
     val PermissionId = 1
     lateinit var sharedPref: SharedPreferencesProvider
 
-
     private var mainAdapter: MainAdapter? = null
 
     lateinit var viewModel: HomeViewModel
@@ -86,13 +85,10 @@ class HomeFragment : Fragment() {
         val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         if (capabilities != null) {
             if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                //   Log.i(Constants.LOG_TAG, "NetworkCapabilities.TRANSPORT_CELLULAR")
                 return true
             } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                //  Log.i(Constants.LOG_TAG, "NetworkCapabilities.TRANSPORT_WIFI")
                 return true
             } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                //   Log.i(Constants.LOG_TAG, "NetworkCapabilities.TRANSPORT_ETHERNET")
                 return true
             }
         }
@@ -273,6 +269,11 @@ class HomeFragment : Fragment() {
 
     }
 
+
+
+
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         // Inflate the layout for this fragment
@@ -289,6 +290,7 @@ class HomeFragment : Fragment() {
                 with(locationRequest) {
                     priority = LocationRequest.PRIORITY_HIGH_ACCURACY
                     interval = 1000
+                    numUpdates=10
                 }
                 val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity().application)
                 fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
@@ -300,7 +302,6 @@ class HomeFragment : Fragment() {
             requestPermission()
         }
     }
-
 
     private fun isPermissionGranted(): Boolean {
         return ActivityCompat.checkSelfPermission(requireActivity().application, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
@@ -326,8 +327,6 @@ class HomeFragment : Fragment() {
             sharedPref.setLatLong("$latDecimal","$lonDecimal")
         }
     }
-
-
 
     private fun requestPermission() {
         ActivityCompat.requestPermissions(requireActivity(),

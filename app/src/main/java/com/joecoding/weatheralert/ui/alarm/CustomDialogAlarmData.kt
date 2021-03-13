@@ -142,17 +142,6 @@ class CustomDialogAlarmData(
         _binding = null
     }
 
-//    var listenr2:DialogListener? = null
-//
-//    fun setLlistenr(l:DialogListener){
-//        listenr2=l
-//    }
-//    interface DialogListener {
-//
-//        fun onAlarmAdded(){
-//
-//        }
-//    }
 }
 
 

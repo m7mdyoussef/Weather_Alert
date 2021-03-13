@@ -46,6 +46,7 @@ class AlarmFragment : Fragment() {
     private var repeating: Int =24
     private val ONE_DAY_IN_SECONDS = 86400000
     private val TWO_DAYS_IN_SECONDS = 172800000
+    private var alarmSwitchedOn: Boolean =false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -100,7 +101,25 @@ class AlarmFragment : Fragment() {
         })
 
 
-        binding.alarmCheck.isChecked = sharedPref.isAlarmSwitchedOn
+
+        alarmSwitchedOn = sharedPref.isAlarmSwitchedOn
+
+        if(alarmSwitchedOn==true){
+            binding.imgAlarm.setBackgroundResource(R.drawable.alarm)
+            binding.checkEventLayout.visibility = View.GONE
+            binding.fornextradioGroup.visibility = View.GONE
+            sharedPref.alarmSwitchedOn(true)
+            binding.fabAlarm.visibility=View.GONE
+            registerAll()
+        }else{
+            binding.imgAlarm.setBackgroundResource(R.drawable.alarm_off)
+            binding.checkEventLayout.visibility = View.VISIBLE
+            binding.fornextradioGroup.visibility = View.VISIBLE
+            sharedPref.alarmSwitchedOn(false)
+            binding.fabAlarm.visibility=View.VISIBLE
+            unRegisterAll()
+
+        }
 
         binding.alarmCheck.setOnClickListener(View.OnClickListener {
             if (binding.checkEventTimeTextInput == null) {
@@ -113,21 +132,19 @@ class AlarmFragment : Fragment() {
                 Toast.makeText(requireContext(), getString(R.string.alarmon), Toast.LENGTH_SHORT).show()
                 binding.imgAlarm.setBackgroundResource(R.drawable.alarm)
                 binding.checkEventLayout.visibility = View.GONE
-                binding.fornextradioGroup.isActivated = false
+                binding.fornextradioGroup.visibility = View.GONE
                 sharedPref.alarmSwitchedOn(true)
                 binding.fabAlarm.visibility=View.GONE
                 Toast.makeText(context,getString(R.string.addalarmperm), Toast.LENGTH_LONG).show()
-
                 registerAll()
             } else {
                 Toast.makeText(requireContext(), getString(R.string.alarmoff), Toast.LENGTH_SHORT).show()
                 binding.imgAlarm.setBackgroundResource(R.drawable.alarm_off)
                 binding.checkEventLayout.visibility = View.VISIBLE
-                binding.fornextradioGroup.isActivated = true
+                binding.fornextradioGroup.visibility = View.VISIBLE
                 sharedPref.alarmSwitchedOn(false)
                 binding.fabAlarm.visibility=View.VISIBLE
                 unRegisterAll()
-
             }
         })
 
