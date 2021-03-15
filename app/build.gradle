@@ -164,5 +164,10 @@ dependencies {
     //wave view
     implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-alpha-1'
 
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha01'
+
+
+
 
 }

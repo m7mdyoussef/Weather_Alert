@@ -38,17 +38,13 @@ class FragmentNextDaysFav : BottomSheetDialogFragment(){
         (view?.parent as View).setBackgroundColor(Color.TRANSPARENT)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?
-                              , savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         sharedPref = SharedPreferencesProvider(requireContext())
 
         _binding = FragmentNextDayFavBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this).get(FavoriteDetailsViewModel::class.java)
 
-
-
         latLongFav = sharedPref.latLongFav
-
 
         viewModel.getFavoriteWeatherData(latLongFav[0],latLongFav[1]).observe(viewLifecycleOwner, Observer {
 
@@ -64,8 +60,6 @@ class FragmentNextDaysFav : BottomSheetDialogFragment(){
                 nextDayAdapter?.notifyDataSetChanged()
                 binding.rvDailyWeather.hideShimmerAdapter()
             }
-
-
         })
 
         return binding.root

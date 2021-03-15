@@ -40,18 +40,14 @@ class FavoriteAdapter(
         holder.lngText.text= items[position].lng
         holder.delete.setOnClickListener(View.OnClickListener {
             favViewModel.deleteItem(items[position].lat ,items[position].lng )
-//            notifyDataSetChanged()
             notifyItemRemoved(position)
         })
-
-        //holder.iconTemp.setAnimation(R.raw.broken_clouds)
 
     }
 
     override fun getItemCount(): Int {
         return items.size
 
-        Log.d("itemSizeeeeeeeeeeeee", items.size.toString())
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
@@ -75,8 +71,6 @@ class FavoriteAdapter(
             val lngClick = items?.get(pos)?.lng
              favViewModel?.onClick("$latClick", "$lngClick")
         }
-
-
 
         }
 

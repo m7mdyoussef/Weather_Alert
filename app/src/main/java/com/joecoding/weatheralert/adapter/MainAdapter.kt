@@ -116,8 +116,6 @@ class MainAdapter(private val mContext: Context, private val items: List<HourlyI
 
     override fun getItemCount(): Int {
         return items!!.size
-
-        Log.d("itemSizeeeeeeeeeeeee", items!!.size.toString())
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

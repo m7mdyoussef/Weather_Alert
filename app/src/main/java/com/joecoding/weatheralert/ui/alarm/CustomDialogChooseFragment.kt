@@ -14,21 +14,13 @@ class CustomDialogChooseFragment(private val alarmViewModel:AlarmViewModel) : Di
     private var _binding: CustomDialogBinding? = null
     private val binding get() = _binding!!
 
-
-
     companion object{
         const val TAG:String="m"
         lateinit var sentMessage:String
     }
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val customDialog2=CustomDialogAlarmData(requireContext(),alarmViewModel)
         _binding = CustomDialogBinding.inflate(inflater, container, false)

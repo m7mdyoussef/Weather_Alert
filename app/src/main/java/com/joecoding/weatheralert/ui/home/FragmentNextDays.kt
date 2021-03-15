@@ -23,7 +23,7 @@ class FragmentNextDays : BottomSheetDialogFragment(){
 
     var nextDayAdapter: NextDayAdapter? = null
 
-    lateinit var viewModel: HomeViewModel
+    lateinit var viewModel: NextDayesViewModel
     private var _binding: FragmentNextDayBinding? = null
     private val binding get() = _binding!!
 
@@ -35,9 +35,9 @@ class FragmentNextDays : BottomSheetDialogFragment(){
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?
                               , savedInstanceState: Bundle?): View? {
         _binding = FragmentNextDayBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(NextDayesViewModel::class.java)
 
-        viewModel.getWeather().observe(viewLifecycleOwner, Observer {
+        viewModel.getWeatherNextDayes().observe(viewLifecycleOwner, Observer {
 
             if (it != null){
                 val daily: List<DailyItem?>? = it.daily
@@ -51,10 +51,6 @@ class FragmentNextDays : BottomSheetDialogFragment(){
                 nextDayAdapter?.notifyDataSetChanged()
                 binding.rvDailyWeather.hideShimmerAdapter()
             }
-
-
-
-
 
         })
 

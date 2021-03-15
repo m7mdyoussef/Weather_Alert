@@ -23,20 +23,20 @@ class Repository(private val application: Application) {
     private  var sharedPref: SharedPreferencesProvider = SharedPreferencesProvider(application)
     private val latLong = sharedPref.latLong
 
-    private  val latPref = latLong[0].toString()
-    private val lngPref = latLong[1].toString()
+    private var latPref = latLong[0].toString()
+    private var lngPref = latLong[1].toString()
     private val language = sharedPref.getLanguage.toString()
     private val  unit = sharedPref.getUnit.toString()
 
 
     // weather ----------------------------------------------------------------------------------------------------------------
 
-    fun fetchData(): LiveData<CurrentWeatherModel> {
-        val exceptionHandlerException = CoroutineExceptionHandler { _, t:Throwable ->
+    fun fetchData(lat: String=latPref, lon: String=lngPref): LiveData<CurrentWeatherModel> {
+     /*   val exceptionHandlerException = CoroutineExceptionHandler { _, t:Throwable ->
 
         }
         CoroutineScope(Dispatchers.IO+exceptionHandlerException).launch{
-                    if (latPref != null) {
+                    if (lat != null ) {
                     if (unit == "imperial") {
                         ApiUnits.tempUnit = application.getString(R.string.Feherinhite)
                         ApiUnits.WindSpeedUnit = application.getString(R.string.mileshr)
@@ -45,22 +45,25 @@ class Repository(private val application: Application) {
                         ApiUnits.WindSpeedUnit = application.getString(R.string.mpers)
                     }
                     val response = WeatherClient.getWeatherService().getCurrentWeather(
-                        latPref, lngPref, "minutely", unit, language, API_KEY)
-                    Log.d("responseeeeeeee", latPref + unit + "--------" + lngPref)
+                        lat, lon, "minutely", unit, language, API_KEY)
+                    Log.d("testtttttttttttt", lat + unit + "--------" + lon)
 
                     if (response.isSuccessful) {
                        // localWeatherDB.deleteAll()
                         localWeatherDB.insert(response.body())
-                        Log.d("responseeeeeeee", response.body().toString())
+                        Log.d("testtttttttttttt", response.body().toString())
                     } else {
-                        Log.d("responseeeeeeee", response.message())
+                        Log.d("testtttttttttttt", response.message())
                     }
                 }
-            }
+            }*/
 
-        Log.d("responseeeeeeee", "ffffffffffffffffffffff")
-          return localWeatherDB.getAll(latPref,lngPref)
+        Log.d("testtttttttttttt", "ffffffffffffffffffffff")
+          return localWeatherDB.getAll(lat,lon)
     }
+
+    // weatherUpdateUi ----------------------------------------------------------------------------------------------------------------
+
 
 
     // favorite --------------------------------------------------------------------------------------------------------------
@@ -148,6 +151,58 @@ class Repository(private val application: Application) {
                 }
             }
         }
+
+    }
+
+    //**--refresh ui ------------------------------------------------------------
+
+   suspend fun refreshCurrentLocation() {
+        Log.d("testtttttttttttt", "on refreshCurrent ")
+
+/*
+        runBlocking(Dispatchers.IO) {
+            launch {
+                try{
+                    if (lat != null) {
+
+                        val response = WeatherClient.getWeatherService()
+                            .getCurrentWeather(lat, lon, "minutely", unit, language,API_KEY)
+                        if (response.isSuccessful) {
+                            latPref=lat
+                            lngPref=lon
+                            localWeatherDB.insert(response.body())
+                            Log.d("testtttttttttttt", "on responseeeeeeeeee ")
+                        }
+                    }
+                }catch(e:Exception){
+                    Log.d("testtttttttttttt", "exceptionnnnnnnnn" )
+                }
+            }
+        }
+*/
+       /* val exceptionHandlerException = CoroutineExceptionHandler { _, t:Throwable ->
+
+        }*/
+            if (latPref != null ) {
+                if (unit == "imperial") {
+                    ApiUnits.tempUnit = application.getString(R.string.Feherinhite)
+                    ApiUnits.WindSpeedUnit = application.getString(R.string.mileshr)
+                } else if (unit == "metric") {
+                    ApiUnits.tempUnit = application.getString(R.string.celicious)
+                    ApiUnits.WindSpeedUnit = application.getString(R.string.mpers)
+                }
+                val response = WeatherClient.getWeatherService().getCurrentWeather(
+                    latPref, lngPref, "minutely", unit, language, API_KEY)
+                Log.d("testtttttttttttt", latPref + unit + "--------" + lngPref)
+
+                if (response.isSuccessful) {
+                    // localWeatherDB.deleteAll()
+                    localWeatherDB.insert(response.body())
+                    Log.d("testtttttttttttt", response.body().toString())
+                } else {
+                    Log.d("testtttttttttttt", response.message())
+                }
+            }
 
     }
 

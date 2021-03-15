@@ -49,7 +49,7 @@ class NextDayAdapter(private val mContext: Context, private val items: List<Dail
         holder.dailytvtemp.text = String.format(Locale.getDefault(), "%.0f°${ApiUnits.tempUnit}", data?.temp?.day)
         holder.dailyHumidity.text =data?.humidity.toString()+" %"
         holder.dailyPressure.text =data?.pressure.toString()+mContext.getString(R.string.hpa)
-        holder.dailyWindSpeed.text =data?.windSpeed.toString()+mContext.getString(R.string.mpers)
+        holder.dailyWindSpeed.text =data?.windSpeed.toString()+ ApiUnits.WindSpeedUnit
         holder.dailyCloud.text =data?.clouds.toString()+" %"
         val description = data?.weather?.get(0)?.description
         holder.dailyDesc.text =description

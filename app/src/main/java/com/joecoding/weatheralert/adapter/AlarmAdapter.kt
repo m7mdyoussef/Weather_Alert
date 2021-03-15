@@ -105,17 +105,11 @@ class AlarmAdapter(
         holder.deleteItem.setOnClickListener(View.OnClickListener {
             deleteDialog(position)
         })
-
-
-
-
     }
 
 
     override fun getItemCount(): Int {
         return items.size
-
-        Log.d("itemSizeeeeeeeeeeeee", items.size.toString())
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
@@ -140,15 +134,6 @@ class AlarmAdapter(
 
         override fun onClick(v: View?) {
         }
-/*
-         override fun onClick(v: View?) {
-            val pos = adapterPosition
-            val latClick = items?.get(pos)?.lat
-            val lngClick = items?.get(pos)?.lng
-             favViewModel?.onClick("$latClick", "$lngClick")
-        }*/
-
-
 
         }
 

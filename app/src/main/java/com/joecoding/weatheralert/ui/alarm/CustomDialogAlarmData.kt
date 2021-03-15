@@ -16,32 +16,19 @@ import com.joecoding.weatheralert.providers.SharedPreferencesProvider
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CustomDialogAlarmData(
-    context: Context,
-   private val alarmViewModel: AlarmViewModel
-) : DialogFragment(){
+class CustomDialogAlarmData(context: Context, private val alarmViewModel: AlarmViewModel) : DialogFragment(){
     var sharedPref: SharedPreferencesProvider = SharedPreferencesProvider(context)
-
     private var _binding: CustomDialogAlarmDataBinding? = null
     private val binding get() = _binding!!
-
-
-
-
-
-
-    var timeT: String=""
-    var timeT2: String=""
     var  lessMore:String="less"
     private var numberText: String="0.0"
     private var number: Double =0.0
     private var accurateState: String=""
     private var  desc: String=""
     private var weatherState: String=""
-
+    private var sentMessage: String=""
 
     private var selectedDays: List<MaterialDayPicker.Weekday> = ArrayList<MaterialDayPicker.Weekday>()
-
 
     companion object{
         val TAG:String="y"
@@ -49,9 +36,6 @@ class CustomDialogAlarmData(
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = CustomDialogAlarmDataBinding.inflate(inflater, container, false)
-
-
-
         return binding.root
     }
 
@@ -60,8 +44,71 @@ class CustomDialogAlarmData(
 
         val language = sharedPref.getLanguage
         binding.dayPicker.locale=Locale.forLanguageTag(language!!)
+        setLessMoreState()
+        checkAddAlarmValidationsByMessageSent()
+        binding.weatherStateTxt.text=sentMessage
+        selectDays()
+        addAlarm()
+    }
 
-        val sentMessage = CustomDialogChooseFragment.sentMessage
+    private fun selectDays(){
+        binding.dayPicker.setDaySelectionChangedListener {
+            Toast.makeText(requireContext(),it.toString(),Toast.LENGTH_LONG).show()
+            selectedDays = it
+        }
+
+    }
+
+    private fun addAlarm(){
+        binding.addAlarmBtn.setOnClickListener(View.OnClickListener {
+            numberText = binding.lessMoreNumber.text.trim().toString()
+            number = numberText.toDouble()
+            accurateState = "$lessMore $numberText ${binding.unitTxt.text.toString()}"
+            desc = binding.description.text.toString()
+            weatherState = binding.weatherStateTxt.text as String
+
+            if (selectedDays.isEmpty()){
+                Toast.makeText(requireContext(),getString(R.string.selectday),Toast.LENGTH_SHORT).show()
+                return@OnClickListener
+            }
+            else if (number<=0.0){
+                Toast.makeText(requireContext(),getString(R.string.number0),Toast.LENGTH_SHORT).show()
+                return@OnClickListener
+            }
+            else if (numberText.isEmpty()){
+                Toast.makeText(requireContext(),getString(R.string.numberempty),Toast.LENGTH_SHORT).show()
+                return@OnClickListener
+            }
+            else if (desc==""){
+                Toast.makeText(requireContext(),getString(R.string.enterdesc),Toast.LENGTH_SHORT).show()
+                return@OnClickListener
+            }else{
+                val timeToAlarm: String = "Anytime"
+                val alarmModel: AlarmModel = AlarmModel(weatherState=weatherState,accurateState=accurateState,
+                    daily=selectedDays,billingTime= timeToAlarm, userDescription=desc,minMaxChoice=lessMore,value=number)
+                //insert to alarm Db
+                alarmViewModel.insertAlarmToDB(alarmModel)
+                dialog?.dismiss()
+            }
+
+        })
+
+    }
+
+    private fun setLessMoreState(){
+        binding.lessMoreRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+            if (checkedId == R.id.lessThanBtn){
+                lessMore="less Than"
+            }
+            if (checkedId == R.id.moreThanBtn){
+                lessMore="more Than"
+            }
+        }
+    }
+
+    private fun checkAddAlarmValidationsByMessageSent(){
+
+        sentMessage = CustomDialogChooseFragment.sentMessage
         if (sentMessage == "Rain" ||sentMessage == "امطار"
             ||sentMessage == "Temperature"||sentMessage == "درجة حرارة"||
             sentMessage == "Wind"||sentMessage == "رياح"|| sentMessage == "Cloudiness"|| sentMessage == "غيوم" ){
@@ -76,66 +123,8 @@ class CustomDialogAlarmData(
             binding.lessMoreRadioGroup.visibility=View.GONE
             binding.lessMoreNumber.setText("1.0")
         }
-        binding.lessMoreRadioGroup.setOnCheckedChangeListener { group, checkedId ->
-            if (checkedId == R.id.lessThanBtn){
-                lessMore="less Than"
-            }
-            if (checkedId == R.id.moreThanBtn){
-                lessMore="more Than"
-            }
 
-        }
-
-        binding.weatherStateTxt.text=sentMessage
-
-
-        binding.dayPicker.setDaySelectionChangedListener {
-            Toast.makeText(requireContext(),it.toString(),Toast.LENGTH_LONG).show()
-            selectedDays = it
-        }
-
-
-        binding.addAlarmBtn.setOnClickListener(View.OnClickListener {
-            numberText = binding.lessMoreNumber.text.trim().toString()
-            number = numberText.toDouble()
-            accurateState = "$lessMore $numberText ${binding.unitTxt.text.toString()}"
-            desc = binding.description.text.toString()
-            weatherState = binding.weatherStateTxt.text as String
-
-            if (selectedDays.isEmpty()){
-                Toast.makeText(requireContext(),getString(R.string.selectday),Toast.LENGTH_SHORT).show()
-                return@OnClickListener
-
-            }
-            else if (number<=0.0){
-                Toast.makeText(requireContext(),getString(R.string.number0),Toast.LENGTH_SHORT).show()
-                return@OnClickListener
-
-            }
-           else if (numberText.isEmpty()){
-                Toast.makeText(requireContext(),getString(R.string.numberempty),Toast.LENGTH_SHORT).show()
-                return@OnClickListener
-
-            }
-           else if (desc==""){
-                Toast.makeText(requireContext(),getString(R.string.enterdesc),Toast.LENGTH_SHORT).show()
-                return@OnClickListener
-
-            }else{
-                val timeToAlarm: String = "Anytime"
-                val alarmModel: AlarmModel = AlarmModel(weatherState=weatherState,accurateState=accurateState,
-                    daily=selectedDays,billingTime= timeToAlarm, userDescription=desc,minMaxChoice=lessMore,value=number)
-                //insert to alarm Db
-                alarmViewModel.insertAlarmToDB(alarmModel)
-                dialog?.dismiss()
-
-            }
-
-
-        })
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()
